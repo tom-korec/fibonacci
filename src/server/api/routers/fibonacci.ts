@@ -1,12 +1,13 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { fibonacci } from "~/utils/fibonacci";
+import { fibonacciInputNumberSchema } from "~/validation";
 
 export const fibonacciRouter = createTRPCRouter({
   compute: publicProcedure
     .input(
       z.object({
-        n: z.number().gte(0, "Parameter N must be greater or equal than 0"),
+        n: fibonacciInputNumberSchema,
       })
     )
     .query(({ input }) => {

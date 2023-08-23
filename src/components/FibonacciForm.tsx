@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { SubmitButton } from "~/components/SubmitButton";
 import { NumberInput } from "~/components/NumberInput";
+import { fibonacciInputNumberSchema } from "~/validation";
 
 interface FibonacciFormProps {
   handleSubmit: (n: number) => void;
@@ -10,15 +11,17 @@ interface FibonacciFormProps {
 export const FibonacciForm = ({ handleSubmit }: FibonacciFormProps) => {
   const [inputValue, setInputValue] = useState<number>(1);
 
+  const isValid = fibonacciInputNumberSchema.safeParse(inputValue).success;
+
   return (
     <form
       className={"flex items-center gap-4"}
       onSubmit={(e) => {
         e.preventDefault();
 
-        // check validation here
-
-        handleSubmit(inputValue);
+        if (isValid) {
+          handleSubmit(inputValue);
+        }
       }}
     >
       <NumberInput
@@ -27,7 +30,7 @@ export const FibonacciForm = ({ handleSubmit }: FibonacciFormProps) => {
           setInputValue(numberValue);
         }}
       />
-      <SubmitButton disabled={inputValue < 0}>Calculate</SubmitButton>
+      <SubmitButton disabled={!isValid}>Calculate</SubmitButton>
     </form>
   );
 };
