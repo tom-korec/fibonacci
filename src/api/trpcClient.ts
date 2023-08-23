@@ -2,15 +2,12 @@ import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
 import superjson from "superjson";
 
 import type { AppRouter } from "~/server/api/root";
-import * as process from "process";
 
-const vercelUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
+const domainUrl = process.env.NEXT_PUBLIC_DOMAIN_URL;
 
-console.log(vercelUrl);
+console.log(domainUrl);
 
-const url = vercelUrl
-  ? `https://${vercelUrl}/api/trpc`
-  : `http://localhost:3000/api/trpc`;
+const url = `${domainUrl}/api/trpc`;
 
 export const trpcClient = createTRPCProxyClient<AppRouter>({
   links: [
