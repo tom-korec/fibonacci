@@ -1,5 +1,6 @@
 import Head from "next/head";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import type { TRPCError } from "@trpc/server";
 
 import { trpcClient } from "~/api/trpcClient";
@@ -8,17 +9,19 @@ import { FibonacciForm } from "~/components/FibonacciForm";
 export default function Home() {
   const [result, setResult] = useState<bigint | null>(null);
 
-  const [error, setError] = useState<string | null>(null);
-
   const handleSubmit = (n: number) => {
     trpcClient.fibonacci.compute
       .query({ n })
       .then((result) => {
         setResult(result.result);
       })
-      .catch((error: TRPCError) => {
-        console.log(error);
-        setError(error.message);
+      .catch((error: { message?: string }) => {
+        const parsedErrors = JSON.parse(error.message ?? "{}") as TRPCError[];
+        console.log(parsedErrors);
+
+        if (parsedErrors.length > 0) {
+          toast.error(parsedErrors[0]?.message ?? "An error occurred");
+        }
       });
   };
 
